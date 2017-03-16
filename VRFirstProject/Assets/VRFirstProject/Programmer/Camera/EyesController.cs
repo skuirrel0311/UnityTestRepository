@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class EyesController : MonoBehaviour
 {
-    Image pointer;
+    Image[] pointers;
     Camera mainCamera;
+    RectTransform canvasRect;
 
     float gaugeValue = 2.0f;
     float maxGaugeValue = 2.0f;
@@ -24,22 +25,15 @@ public class EyesController : MonoBehaviour
 
     void Start()
     {
-        pointer = GameObject.Find("Canvas").transform.FindChild("Pointer").GetComponent<Image>();
+        canvasRect = GameObject.Find("Canvas").GetComponent<RectTransform>();
+        pointers = canvasRect.transform.FindChild("Pointers").GetComponentsInChildren<Image>();
+        
         mainCamera = GetComponent<Camera>();
     }
 
     void Update()
     {
-        ray = mainCamera.ViewportPointToRay(centerPosition);
-
-        if (Physics.SphereCast(ray, 0.2f, out hit, 100.0f, mask))
-        {
-            currentSeeObj = hit.transform.gameObject;
-        }
-        else
-        {
-            currentSeeObj = null;
-        }
+        currentSeeObj = GetSeeObject();
 
         PointerControl(currentSeeObj);
 
@@ -51,8 +45,28 @@ public class EyesController : MonoBehaviour
         }
     }
 
+    GameObject GetSeeObject()
+    {
+        GameObject obj;
+        ray = mainCamera.ViewportPointToRay(centerPosition);
+
+        if (Physics.SphereCast(ray, 0.2f, out hit, 100.0f, mask))
+        {
+            obj = hit.transform.gameObject;
+        }
+        else
+        {
+            obj = null;
+        }
+
+        return obj;
+    }
+
     void PointerControl(GameObject currentSeeObj)
     {
+        pointers[0].rectTransform.anchoredPosition = new Vector2(canvasRect.sizeDelta.x * -0.25f, 0.0f);
+        pointers[1].rectTransform.anchoredPosition = new Vector2(canvasRect.sizeDelta.x * 0.25f, 0.0f);
+
         if (currentSeeObj == null)
             gaugeValue += Time.deltaTime * 2.0f;
         else if (!currentSeeObj.Equals(oldSeeObj))
@@ -63,6 +77,8 @@ public class EyesController : MonoBehaviour
         gaugeValue = Mathf.Clamp(gaugeValue, 0.0f, maxGaugeValue);
 
         oldSeeObj = currentSeeObj;
-        pointer.fillAmount = gaugeValue / maxGaugeValue;
+        float temp = gaugeValue / maxGaugeValue;
+        pointers[0].fillAmount = temp;
+        pointers[1].fillAmount = temp;
     }
 }
