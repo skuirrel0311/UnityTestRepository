@@ -11,10 +11,10 @@ public class TitleManager : BaseManager<TitleManager>
     //パーティクルのパラメータはモジュールの値をいじらないといけない
     ParticleSystem.MainModule module;
 
+    //色を変える時間の間隔
     [SerializeField]
     float intervalTime = 5.0f;
 
-    enum ColorName { White ,Red, Orange, Yellow, Green, Blue, Indigo, Violet }
     List<Color> colorList = new List<Color>();
     int currentIndex = 0;
 
@@ -30,12 +30,12 @@ public class TitleManager : BaseManager<TitleManager>
     {
         colorList.Add(Color.white);
         colorList.Add(Color.red);
-        colorList.Add(new Color(1.0f, 0.517f, 0.0f));
+        colorList.Add(new Color(1.0f, 0.517f, 0.0f));//Orange
         colorList.Add(Color.yellow);
         colorList.Add(Color.green);
         colorList.Add(Color.blue);
-        colorList.Add(new Color(0.282f, 0.0f, 1.0f));
-        colorList.Add(new Color(0.698f, 0.0f, 1.0f));
+        colorList.Add(new Color(0.282f, 0.0f, 1.0f));//Indigo
+        colorList.Add(new Color(0.698f, 0.0f, 1.0f));//Violet
     }
 
     IEnumerator SetRandomColor()
