@@ -56,10 +56,9 @@ public class FirstPersonCameraController : MonoBehaviour {
 
     void Update()
     {
-        if (player == null) return;
         if (!IsWork) return;
 
-        if (Input.GetKeyDown(KeyCode.E)) ChangeMouseControl();
+        if (Input.GetKeyDown(KeyCode.Escape)) ChangeMouseControl();
 
         Vector2 inputVector = GetInputVector();
 
@@ -74,14 +73,14 @@ public class FirstPersonCameraController : MonoBehaviour {
 
         transform.LookAt(targetPosition);
 
-        player.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, transform.eulerAngles.y, 0.0f));
+        if(player != null) player.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, transform.eulerAngles.y, 0.0f));
     }
 
     protected virtual Vector2 GetInputVector()
     {
         Vector2 rightStick;
-        rightStick.x = Input.GetAxis("Horizontal2");
-        rightStick.y = Input.GetAxis("Vertical2");
+        rightStick.x = Input.GetAxis("Horizontal");
+        rightStick.y = Input.GetAxis("Vertical");
 
         if (rightStick == Vector2.zero)
         {

@@ -32,13 +32,25 @@ public class VRFirstPersonCameraController : MonoBehaviour
     void Start()
     {
         Input.gyro.enabled = true;
+
+        GameObject obj = GameObject.Find("GvrViewerMain");
+
+        if(obj == null)
+        {
+            //VRモードがオフであるということ
+            this.enabled = false;
+        }
+        else
+        {
+            GetComponent<FirstPersonCameraController>().enabled = false;
+        }
     }
 
     void Update()
     {
         if (Application.isEditor)
         {
-            if (Input.GetKeyDown(KeyCode.E)) ChangeMouseControl();
+            if (Input.GetKeyDown(KeyCode.Escape)) ChangeMouseControl();
             EditorCameraController();
             return;
         }
