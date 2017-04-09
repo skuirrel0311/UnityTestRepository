@@ -18,12 +18,29 @@ public class TitleManager : BaseManager<TitleManager>
     List<Color> colorList = new List<Color>();
     int currentIndex = 0;
 
+    [SerializeField]
+    EyesController eye = null;
+
+    bool isTransition = false;
+
     protected override void Start()
     {
         base.Start();
 
         SetColorList();
         StartCoroutine(SetRandomColor());
+    }
+
+    protected override void Update()
+    {
+        if(eye.gaugeValue <= 0.0f)
+        {
+            if (isTransition) return;
+            isTransition = true;
+
+            LoadSceneManager.I.LoadScene("main", true, 1.0f);
+        }
+
     }
 
     void SetColorList()

@@ -7,12 +7,16 @@ public class AudioManager : BaseManager<AudioManager>
     AudioSource audioSource;
     AudioSource loopAudioSource;
 
+    GameObject oneShotAudioOriginal;
+
     [SerializeField]
     List<AudioClip> clipList = new List<AudioClip>();
 
     protected override void Start()
     {
         base.Start();
+
+        oneShotAudioOriginal = transform.GetChild(0).gameObject;
         AudioSource[] temp = GetComponents<AudioSource>();
 
         audioSource = temp[0];
@@ -41,12 +45,20 @@ public class AudioManager : BaseManager<AudioManager>
         audioSource.PlayOneShot(clip, volume);
     }
 
-    public void PlayOneShot(string clipName, Vector3 position, float volume = 1.0f)
+    public AudioSource PlayOneShot(string clipName, Vector3 position, float volume = 1.0f)
     {
         AudioClip clip = GetAudioClip(clipName);
+        
+        if (clip == null) return null;
+        AudioSource temp = Instantiate(oneShotAudioOriginal, position, Quaternion.identity).GetComponent<AudioSource>();
 
-        if (clip == null) return;
-        AudioSource.PlayClipAtPoint(clip, position, volume);
+        temp.clip = clip;
+        temp.volume = volume;
+        temp.transform.parent = transform;
+        Destroy(temp.gameObject, clip.length);
+        temp.Play();
+
+        return temp;
     }
 
     AudioClip GetAudioClip(string clipName)

@@ -8,19 +8,23 @@ public class EyesController : MonoBehaviour
     Camera mainCamera;
     Material pointerMat;
 
-    float gaugeValue = 2.0f;
+    //public float gaugeValue { get; private set; }
+    public float gaugeValue;
     float maxGaugeValue = 2.0f;
 
     Ray ray;
     Vector3 centerPosition = new Vector3(0.5f, 0.5f, 0.0f);
     RaycastHit hit;
+
+    [System.NonSerialized]
+    public float radius = 0.2f;
+    [System.NonSerialized]
+    public float distance = 100.0f;
     [SerializeField]
-    LayerMask mask;
+    LayerMask mask = 0;
 
-    GameObject currentSeeObj = null;
-    GameObject oldSeeObj = null;
-
-    bool isTransition = false;
+    public GameObject currentSeeObj { get; private set; }
+    public GameObject oldSeeObj { get; private set; }
 
     float startInnerValue = 0.0f, startOuterValue = 0.08f;
     float endInnerValue = 0.3f, endOuterValue = 0.35f;
@@ -34,6 +38,8 @@ public class EyesController : MonoBehaviour
         pointerMat.SetFloat("_InnerDiameter", 0.0f);
         pointerMat.SetFloat("_OuterDiameter", 0.08f);
         pointerMat.SetFloat("_DistanceInMeters", 10.0f);
+
+        gaugeValue = maxGaugeValue;
     }
 
     void CreateReticleVertices()
@@ -96,13 +102,6 @@ public class EyesController : MonoBehaviour
         currentSeeObj = GetSeeObject();
 
         PointerControl(currentSeeObj);
-
-        if (gaugeValue == 0.0f)
-        {
-            if (isTransition) return;
-            isTransition = true;
-            LoadSceneManager.I.LoadScene("main", true, 1.0f);
-        }
     }
     
     GameObject GetSeeObject()
@@ -110,7 +109,7 @@ public class EyesController : MonoBehaviour
         GameObject obj;
         ray = mainCamera.ViewportPointToRay(centerPosition);
 
-        if (Physics.SphereCast(ray, 0.2f, out hit, 100.0f, mask))
+        if (Physics.SphereCast(ray, radius, out hit, distance, mask))
         {
             obj = hit.transform.gameObject;
         }
@@ -136,7 +135,12 @@ public class EyesController : MonoBehaviour
         oldSeeObj = currentSeeObj;
         float temp = 1.0f - (gaugeValue / maxGaugeValue);
 
-        pointerMat.SetFloat("_InnerDiameter", Mathf.Lerp(startInnerValue, endInnerValue, temp));
-        pointerMat.SetFloat("_OuterDiameter", Mathf.Lerp(startOuterValue, endOuterValue, temp));
+        SetPointerValue(temp);
+    }
+
+    void SetPointerValue(float value)
+    {
+        pointerMat.SetFloat("_InnerDiameter", Mathf.Lerp(startInnerValue, endInnerValue, value));
+        pointerMat.SetFloat("_OuterDiameter", Mathf.Lerp(startOuterValue, endOuterValue, value));
     }
 }

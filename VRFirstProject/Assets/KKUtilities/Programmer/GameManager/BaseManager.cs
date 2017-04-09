@@ -53,6 +53,8 @@ public class BaseManager<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
+    protected virtual void Update() { }
+
     protected virtual void OnDestroy()
     {
         I = null;
