@@ -38,7 +38,7 @@ public class ParticleManager : BaseManager<ParticleManager>
         Play(particleName, position, Quaternion.identity);
     }
 
-    ParticleSystem GetParticle(string particleName)
+    public ParticleSystem GetParticle(string particleName)
     {
         ParticleSystem particle = particleInstanceList.Find(n => n.name == particleName);
 

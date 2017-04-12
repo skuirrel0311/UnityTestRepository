@@ -33,7 +33,7 @@ public class TitleManager : BaseManager<TitleManager>
 
     protected override void Update()
     {
-        if(eye.gaugeValue <= 0.0f)
+        if(eye.progress == 1.0f)
         {
             if (isTransition) return;
             isTransition = true;

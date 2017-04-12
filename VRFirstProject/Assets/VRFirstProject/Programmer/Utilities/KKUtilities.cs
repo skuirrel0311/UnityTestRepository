@@ -1,9 +1,13 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 
 public class KKUtilities
 {
+    static List<Color> colorList = new List<Color>();
+    static bool setColor = false;
+
     //duration秒後にactionを実行します
     public static IEnumerator Delay(float duration, Action action)
     {
@@ -71,5 +75,22 @@ public class KKUtilities
         position.z = temp1 * Mathf.Cos(temp2);
 
         return position;
+    }
+
+    public static Color GetRandomColor()
+    {
+        if (!setColor)
+        {
+            colorList.Add(Color.white);
+            colorList.Add(Color.red);
+            colorList.Add(new Color(1.0f, 0.517f, 0.0f));//Orange
+            colorList.Add(Color.yellow);
+            colorList.Add(Color.green);
+            colorList.Add(Color.blue);
+            colorList.Add(new Color(0.282f, 0.0f, 1.0f));//Indigo
+            colorList.Add(new Color(0.698f, 0.0f, 1.0f));//Violet
+        }
+
+        return colorList[(int)UnityEngine.Random.Range(0, colorList.Count)];
     }
 }

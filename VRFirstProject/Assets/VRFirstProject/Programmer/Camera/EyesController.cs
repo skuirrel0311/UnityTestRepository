@@ -8,9 +8,10 @@ public class EyesController : MonoBehaviour
     Camera mainCamera;
     Material pointerMat;
 
-    //public float gaugeValue { get; private set; }
-    public float gaugeValue;
+    public float gaugeValue { get; private set; }
     float maxGaugeValue = 2.0f;
+
+    public float progress { get; private set; }
 
     Ray ray;
     Vector3 centerPosition = new Vector3(0.5f, 0.5f, 0.0f);
@@ -38,8 +39,6 @@ public class EyesController : MonoBehaviour
         pointerMat.SetFloat("_InnerDiameter", 0.0f);
         pointerMat.SetFloat("_OuterDiameter", 0.08f);
         pointerMat.SetFloat("_DistanceInMeters", 10.0f);
-
-        gaugeValue = maxGaugeValue;
     }
 
     void CreateReticleVertices()
@@ -124,23 +123,28 @@ public class EyesController : MonoBehaviour
     void PointerControl(GameObject currentSeeObj)
     {
         if (currentSeeObj == null)
-            gaugeValue += Time.deltaTime * 2.0f;
+            gaugeValue -= Time.deltaTime * 2.0f;
         else if (!currentSeeObj.Equals(oldSeeObj))
-            gaugeValue += Time.deltaTime * 50.0f;
+            gaugeValue -= Time.deltaTime * 50.0f;
         else
-            gaugeValue -= Time.deltaTime;
+            gaugeValue += Time.deltaTime;
 
         gaugeValue = Mathf.Clamp(gaugeValue, 0.0f, maxGaugeValue);
 
         oldSeeObj = currentSeeObj;
-        float temp = 1.0f - (gaugeValue / maxGaugeValue);
+        progress = gaugeValue / maxGaugeValue;
 
-        SetPointerValue(temp);
+        SetPointerValue(progress);
     }
 
     void SetPointerValue(float value)
     {
         pointerMat.SetFloat("_InnerDiameter", Mathf.Lerp(startInnerValue, endInnerValue, value));
         pointerMat.SetFloat("_OuterDiameter", Mathf.Lerp(startOuterValue, endOuterValue, value));
+    }
+
+    public void ResetValue()
+    {
+        gaugeValue = 0.0f;
     }
 }
