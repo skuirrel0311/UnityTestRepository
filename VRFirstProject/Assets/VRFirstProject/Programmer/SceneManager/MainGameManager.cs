@@ -14,12 +14,9 @@ public class MainGameManager : BaseManager<MainGameManager>
     [SerializeField]
     TextController dreamText = null;
 
-    GameObject cameraObj;
-
     protected override void Start()
     {
         eye.distance = 10000.0f;
-        cameraObj = Camera.main.gameObject;
         dreamText.SetText(0.0f, true);
         GameStart();
         base.Start();
